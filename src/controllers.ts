@@ -49,26 +49,31 @@ export const getEntries = async (
   }
 };
 
-export const updateEntry = async (req : Request, res : Response) : Promise<void> => {
+export const updateEntry = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { entity, id } = req.params;
   const data = req.body;
 
   try {
-    await db(entity).where('id', id).update(data);
-    res.status(200).send('Entry updated');
+    await db(entity).where("id", id).update(data);
+    res.status(200).send("Entry updated");
   } catch (error) {
     res.status(500).send(error.message);
   }
 };
 
-export const deleteEntry = async (req : Request, res : Response) : Promise<void> => {
+export const deleteEntry = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { entity, id } = req.params;
 
   try {
-    await db(entity).where('id', id).del();
-    res.status(200).send('Entry deleted');
+    await db(entity).where("id", id).del();
+    res.status(200).send("Entry deleted");
   } catch (error) {
     res.status(500).send(error.message);
   }
 };
-

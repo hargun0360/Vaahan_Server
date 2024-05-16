@@ -124,3 +124,34 @@ export const deleteEntry = async (
     });
   }
 };
+
+export const addAttribute = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { entityName, attribute } = req.body;
+  const { name, type } = attribute;
+
+  try {
+    const mappedType = typeMapping[type];
+    if (!mappedType) {
+      throw new Error(`Invalid type: ${type}`);
+    }
+
+    await db.schema.table(entityName, (table) => {
+      table.specificType(name, mappedType);
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Attribute ${name} added to entity ${entityName}`,
+      status: 200,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      status: 500,
+    });
+  }
+};

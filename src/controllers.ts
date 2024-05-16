@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { db } from "./db.js";
 
 const typeMapping: { [key: string]: string } = {
-  String: 'VARCHAR',
-  BigInt: 'BIGINT',
-  Date: 'DATE'
+  String: "VARCHAR",
+  BigInt: "BIGINT",
+  Date: "DATE",
 };
 
 export const createEntity = async (
@@ -26,9 +26,17 @@ export const createEntity = async (
       });
     });
 
-    res.status(201).send(`Entity ${entityName} created`);
+    res.status(201).json({
+      success: true,
+      message: `Entity ${entityName} created`,
+      status: 201,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      status: 500,
+    });
   }
 };
 
@@ -41,9 +49,17 @@ export const createEntry = async (
 
   try {
     await db(entity).insert(data);
-    res.status(201).send("Entry created");
+    res.status(201).json({
+      success: true,
+      message: `Entry created`,
+      status: 201,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      status: 500,
+    });
   }
 };
 
@@ -56,7 +72,11 @@ export const getEntries = async (
     const entries = await db(entity).select();
     res.status(200).json(entries);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      status: 500,
+    });
   }
 };
 
@@ -69,9 +89,17 @@ export const updateEntry = async (
 
   try {
     await db(entity).where("id", id).update(data);
-    res.status(200).send("Entry updated");
+    res.status(200).json({
+      success: true,
+      message: `Entry Updated`,
+      status: 200,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      status: 500,
+    });
   }
 };
 
@@ -83,8 +111,16 @@ export const deleteEntry = async (
 
   try {
     await db(entity).where("id", id).del();
-    res.status(200).send("Entry deleted");
+    res.status(200).json({
+      success: true,
+      message: `Entry Deleted`,
+      status: 200,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      status: 500,
+    });
   }
 };

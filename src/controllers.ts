@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 import { db } from "./db.js";
 
+const typeMapping: { [key: string]: string } = {
+  String: 'VARCHAR',
+  BigInt: 'BIGINT',
+  Date: 'DATE'
+};
+
 export const createEntity = async (
   req: Request,
   res: Response
@@ -11,7 +17,12 @@ export const createEntity = async (
     await db.schema.createTable(entityName, (table) => {
       table.increments("id");
       attributes.forEach((attr: { name: string; type: string }) => {
-        table.specificType(attr.name, attr.type);
+        const mappedType = typeMapping[attr.type];
+        if (mappedType) {
+          table.specificType(attr.name, mappedType);
+        } else {
+          throw new Error(`Invalid type: ${attr.type}`);
+        }
       });
     });
 

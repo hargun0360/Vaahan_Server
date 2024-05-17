@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {db} from "./db.js";
+import { db } from "./db.js";
 
 const typeMapping: { [key: string]: string } = {
   text: "VARCHAR",
@@ -9,15 +9,12 @@ const typeMapping: { [key: string]: string } = {
   int: "INT",
 };
 
-export const createEntity = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const createEntity = async (req: Request, res: Response): Promise<void> => {
   const { entityName, attributes } = req.body;
 
   try {
     await db.schema.createTable(entityName, (table) => {
-      table.increments("id");
+      table.string("id").primary();
       attributes.forEach((attr: { name: string; type: string; isRequired: string }) => {
         const mappedType = typeMapping[attr.type];
         if (mappedType) {
@@ -46,10 +43,7 @@ export const createEntity = async (
   }
 };
 
-export const createEntry = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const createEntry = async (req: Request, res: Response): Promise<void> => {
   const { entity } = req.params;
   const data = req.body;
 
@@ -62,10 +56,13 @@ export const createEntry = async (
       }
     }
 
+    const uniqueId = `id_${Date.now()}`;
+    data.id = uniqueId;
+
     await db(entity).insert(data);
     res.status(201).json({
       success: true,
-      message: `Entry created`,
+      message: `Entry created with ID ${uniqueId}`,
       status: 201,
     });
   } catch (error) {
@@ -77,14 +74,14 @@ export const createEntry = async (
   }
 };
 
-export const getEntries = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getEntries = async (req: Request, res: Response): Promise<void> => {
   const { entity } = req.params;
   try {
     const entries = await db(entity).select();
-    res.status(200).json(entries);
+    const entitySchema = await db(entity).columnInfo();
+    const attributes = Object.keys(entitySchema).map(key => ({ name: key, type: entitySchema[key].type }));
+
+    res.status(200).json({ entries, attributes });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -94,10 +91,7 @@ export const getEntries = async (
   }
 };
 
-export const updateEntry = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const updateEntry = async (req: Request, res: Response): Promise<void> => {
   const { entity, id } = req.params;
   const data = req.body;
 
@@ -117,10 +111,7 @@ export const updateEntry = async (
   }
 };
 
-export const deleteEntry = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const deleteEntry = async (req: Request, res: Response): Promise<void> => {
   const { entity, id } = req.params;
 
   try {
@@ -139,10 +130,7 @@ export const deleteEntry = async (
   }
 };
 
-export const addAttribute = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const addAttribute = async (req: Request, res: Response): Promise<void> => {
   const { entityName, attribute } = req.body;
   const { name, type } = attribute;
 
@@ -177,10 +165,7 @@ export const addAttribute = async (
   }
 };
 
-export const deleteAttribute = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const deleteAttribute = async (req: Request, res: Response): Promise<void> => {
   const { entityName, attributeName } = req.body;
 
   try {
@@ -194,7 +179,7 @@ export const deleteAttribute = async (
       status: 200,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status500().json({
       success: false,
       message: error.message,
       status: 500,
@@ -202,10 +187,7 @@ export const deleteAttribute = async (
   }
 };
 
-export const updateAttribute = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const updateAttribute = async (req: Request, res: Response): Promise<void> => {
   const { entityName, oldAttribute, newAttribute } = req.body;
 
   try {

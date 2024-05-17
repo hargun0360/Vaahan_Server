@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { db } from "./db.js";
+import moment from "moment";
 
 const typeMapping: { [key: string]: string } = {
   text: "VARCHAR",
@@ -51,14 +52,15 @@ export const createEntry = async (req: Request, res: Response): Promise<void> =>
     const entitySchema = await db(entity).columnInfo();
 
     for (const [key, value] of Object.entries(entitySchema)) {
-      if (value.nullable === false && (data[key] === null || data[key] === undefined || data[key] === '')) {
+      if (key !== "id" && value.nullable === false && (data[key] === null || data[key] === undefined || data[key] === "")) {
         throw new Error(`Field "${key}" is required and cannot be null or empty`);
       }
     }
 
-    const uniqueId = `id_${Date.now()}`;
+    const uniqueId = Date.now();
     data.id = uniqueId;
-
+    console.log(data);
+    
     await db(entity).insert(data);
     res.status(201).json({
       success: true,
@@ -79,9 +81,23 @@ export const getEntries = async (req: Request, res: Response): Promise<void> => 
   try {
     const entries = await db(entity).select();
     const entitySchema = await db(entity).columnInfo();
-    const attributes = Object.keys(entitySchema).map(key => ({ name: key, type: entitySchema[key].type }));
+    const attributes = Object.keys(entitySchema).map((key) => ({
+      name: key,
+      type: entitySchema[key].type,
+    }));
 
-    res.status(200).json({ entries, attributes });
+    // Format date fields in entries
+    const formattedEntries = entries.map(entry => {
+      const formattedEntry = { ...entry };
+      for (const attr of attributes) {
+        if (attr.type === 'date' && formattedEntry[attr.name]) {
+          formattedEntry[attr.name] = moment(formattedEntry[attr.name]).format('DD-MM-YYYY');
+        }
+      }
+      return formattedEntry;
+    });
+
+    res.status(200).json({ entries: formattedEntries, attributes });
   } catch (error) {
     res.status(500).json({
       success: false,

@@ -8,9 +8,15 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+const corsOptions = {
+  credentials: true,
+  origin: ['http://localhost:3000', 'http://localhost:8080'] // Whitelist the domains you want to allow
+};
+
+app.use(cors(corsOptions)); 
+
 app.use(express.json());
 app.use("/api", routes);
-app.use(cors());
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

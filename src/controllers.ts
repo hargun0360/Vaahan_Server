@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
-import { db } from "./db.js";
+import {db} from "./db.js";
 
 const typeMapping: { [key: string]: string } = {
-  String: "VARCHAR",
-  BigInt: "BIGINT",
-  Date: "DATE",
+  text: "VARCHAR",
+  bigint: "BIGINT",
+  date: "DATE",
+  serial: "SERIAL",
+  int: "INT",
 };
 
 export const createEntity = async (
@@ -16,10 +18,14 @@ export const createEntity = async (
   try {
     await db.schema.createTable(entityName, (table) => {
       table.increments("id");
-      attributes.forEach((attr: { name: string; type: string }) => {
+      attributes.forEach((attr: { name: string; type: string; isRequired: string }) => {
         const mappedType = typeMapping[attr.type];
         if (mappedType) {
-          table.specificType(attr.name, mappedType);
+          if (attr.isRequired === "YES") {
+            table.specificType(attr.name, mappedType).notNullable();
+          } else {
+            table.specificType(attr.name, mappedType);
+          }
         } else {
           throw new Error(`Invalid type: ${attr.type}`);
         }
@@ -48,6 +54,14 @@ export const createEntry = async (
   const data = req.body;
 
   try {
+    const entitySchema = await db(entity).columnInfo();
+
+    for (const [key, value] of Object.entries(entitySchema)) {
+      if (value.nullable === false && (data[key] === null || data[key] === undefined || data[key] === '')) {
+        throw new Error(`Field "${key}" is required and cannot be null or empty`);
+      }
+    }
+
     await db(entity).insert(data);
     res.status(201).json({
       success: true,

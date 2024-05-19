@@ -195,7 +195,7 @@ export const deleteAttribute = async (req: Request, res: Response): Promise<void
       status: 200,
     });
   } catch (error) {
-    res.status500().json({
+    res.status(500).json({
       success: false,
       message: error.message,
       status: 500,

@@ -2,11 +2,15 @@
   "name": "vahan_server",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": "20.x"
+  },
   "type": "module",
   "scripts": {
     "start:ts": "tsc -w",
     "start:js": "nodemon dist/index.js",
-    "start": "concurrently npm:start:*"
+    "start": "concurrently npm:start:*",
+    "vercel": "echo hello"
   },
   "keywords": [],
   "author": "",

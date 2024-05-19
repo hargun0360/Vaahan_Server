@@ -10,10 +10,11 @@ const port = process.env.PORT || 3000;
 
 const corsOptions = {
   credentials: true,
-  origin: ['http://localhost:3000', 'http://localhost:8080'] // Whitelist the domains you want to allow
+  origin: "*", // Allows all domains
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Specify the allowed method
 };
 
-app.use(cors(corsOptions)); 
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use("/api", routes);

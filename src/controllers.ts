@@ -36,11 +36,11 @@ export const createEntity = async (req: Request, res: Response): Promise<void> =
       status: 201,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      status: 500,
-    });
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
   }
 };
 
@@ -68,11 +68,11 @@ export const createEntry = async (req: Request, res: Response): Promise<void> =>
       status: 201,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      status: 500,
-    });
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
   }
 };
 
@@ -99,11 +99,11 @@ export const getEntries = async (req: Request, res: Response): Promise<void> => 
 
     res.status(200).json({ entries: formattedEntries, attributes });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      status: 500,
-    });
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
   }
 };
 
@@ -119,11 +119,11 @@ export const updateEntry = async (req: Request, res: Response): Promise<void> =>
       status: 200,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      status: 500,
-    });
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
   }
 };
 
@@ -138,11 +138,11 @@ export const deleteEntry = async (req: Request, res: Response): Promise<void> =>
       status: 200,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      status: 500,
-    });
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
   }
 };
 
@@ -173,11 +173,11 @@ export const addAttribute = async (req: Request, res: Response): Promise<void> =
       status: 200,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      status: 500,
-    });
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
   }
 };
 
@@ -195,11 +195,11 @@ export const deleteAttribute = async (req: Request, res: Response): Promise<void
       status: 200,
     });
   } catch (error) {
-    res.status500().json({
-      success: false,
-      message: error.message,
-      status: 500,
-    });
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
   }
 };
 
@@ -231,10 +231,10 @@ export const updateAttribute = async (req: Request, res: Response): Promise<void
       status: 200,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      status: 500,
-    });
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
   }
 };

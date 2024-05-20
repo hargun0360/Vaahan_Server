@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "tsc",
     "start:ts": "tsc -w",
     "start:js": "nodemon dist/index.js",
     "start": "concurrently npm:start:*"

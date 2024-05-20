@@ -1,6 +1,6 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
-import {
+const {
   createEntity,
   createEntry,
   getEntries,
@@ -9,7 +9,7 @@ import {
   addAttribute,
   deleteAttribute,
   updateAttribute,
-} from "./controllers.js";
+} = require("./controllers.js");
 
 router.post("/entities", createEntity);
 router.post("/:entity", createEntry);
@@ -20,4 +20,4 @@ router.post("/entities/add-attribute", addAttribute);
 router.post("/entities/delete-attribute", deleteAttribute);
 router.post("/entities/update-attribute", updateAttribute);
 
-export default router;
+module.exports = router;

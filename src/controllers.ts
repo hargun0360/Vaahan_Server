@@ -10,11 +10,11 @@ const typeMapping: { [key: string]: string } = {
   int: "INT",
 };
 
-export const createEntity = async (req: typeof  Request, res: typeof  Response): Promise<void> => {
+export const createEntity = async (req: typeof Request, res: typeof Response): Promise<void> => {
   const { entityName, attributes } = req.body;
 
   try {
-    await db.schema.createTable(entityName, (table) => {
+    await db.schema.createTable(entityName, (table: any) => {
       table.string("id").primary();
       attributes.forEach((attr: { name: string; type: string; isRequired: string }) => {
         const mappedType = typeMapping[attr.type];
@@ -35,7 +35,7 @@ export const createEntity = async (req: typeof  Request, res: typeof  Response):
       message: `Entity ${entityName} created`,
       status: 201,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error(error.message);
     } else {
@@ -44,7 +44,7 @@ export const createEntity = async (req: typeof  Request, res: typeof  Response):
   }
 };
 
-export const createEntry = async (req: typeof  Request, res: typeof Response): Promise<void> => {
+export const createEntry = async (req: typeof Request, res: typeof Response): Promise<void> => {
   const { entity } = req.params;
   const data = req.body;
 
@@ -52,7 +52,7 @@ export const createEntry = async (req: typeof  Request, res: typeof Response): P
     const entitySchema = await db(entity).columnInfo();
 
     for (const [key, value] of Object.entries(entitySchema)) {
-      if (key !== "id" && value.nullable === false && (data[key] === null || data[key] === undefined || data[key] === "")) {
+      if (key !== "id" && (value as any).nullable === false && (data[key] === null || data[key] === undefined || data[key] === "")) {
         throw new Error(`Field "${key}" is required and cannot be null or empty`);
       }
     }
@@ -67,7 +67,7 @@ export const createEntry = async (req: typeof  Request, res: typeof Response): P
       message: `Entry created with ID ${uniqueId}`,
       status: 201,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error(error.message);
     } else {
@@ -83,11 +83,11 @@ export const getEntries = async (req: typeof Request, res: typeof Response): Pro
     const entitySchema = await db(entity).columnInfo();
     const attributes = Object.keys(entitySchema).map((key) => ({
       name: key,
-      type: entitySchema[key].type,
+      type: (entitySchema as any)[key].type,
     }));
 
     // Format date fields in entries
-    const formattedEntries = entries.map(entry  => {
+    const formattedEntries = entries.map((entry: any) => {
       const formattedEntry = { ...entry };
       for (const attr of attributes) {
         if (attr.type === 'date' && formattedEntry[attr.name]) {
@@ -98,7 +98,7 @@ export const getEntries = async (req: typeof Request, res: typeof Response): Pro
     });
 
     res.status(200).json({ entries: formattedEntries, attributes });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error(error.message);
     } else {
@@ -118,7 +118,7 @@ export const updateEntry = async (req: typeof Request, res: typeof Response): Pr
       message: `Entry Updated`,
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error(error.message);
     } else {
@@ -137,7 +137,7 @@ export const deleteEntry = async (req: typeof Request, res: typeof Response): Pr
       message: `Entry Deleted`,
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error(error.message);
     } else {
@@ -163,7 +163,7 @@ export const addAttribute = async (req: typeof Request, res: typeof Response): P
       );
     }
 
-    await db.schema.table(entityName, (table) => {
+    await db.schema.table(entityName, (table: any) => {
       table.specificType(name, mappedType);
     });
 
@@ -172,7 +172,7 @@ export const addAttribute = async (req: typeof Request, res: typeof Response): P
       message: `Attribute ${name} added to entity ${entityName}`,
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error(error.message);
     } else {
@@ -185,7 +185,7 @@ export const deleteAttribute = async (req: typeof Request, res: typeof Response)
   const { entityName, attributeName } = req.body;
 
   try {
-    await db.schema.table(entityName, (table) => {
+    await db.schema.table(entityName, (table: any) => {
       table.dropColumn(attributeName);
     });
 
@@ -194,7 +194,7 @@ export const deleteAttribute = async (req: typeof Request, res: typeof Response)
       message: `Attribute ${attributeName} deleted from entity ${entityName}`,
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error(error.message);
     } else {
@@ -207,9 +207,9 @@ export const updateAttribute = async (req: typeof Request, res: typeof Response)
   const { entityName, oldAttribute, newAttribute } = req.body;
 
   try {
-    await db.transaction(async (trx) => {
+    await db.transaction(async (trx: any) => {
       if (oldAttribute.name !== newAttribute.name) {
-        await trx.schema.table(entityName, (table) => {
+        await trx.schema.table(entityName, (table: any) => {
           table.renameColumn(oldAttribute.name, newAttribute.name);
         });
       }
@@ -219,7 +219,7 @@ export const updateAttribute = async (req: typeof Request, res: typeof Response)
         if (!mappedType) {
           throw new Error(`Invalid type: ${newAttribute.type}`);
         }
-        await trx.schema.table(entityName, (table) => {
+        await trx.schema.table(entityName, (table: any) => {
           table.specificType(newAttribute.name, mappedType).alter();
         });
       }
@@ -230,7 +230,7 @@ export const updateAttribute = async (req: typeof Request, res: typeof Response)
       message: `Attribute ${oldAttribute.name} updated in entity ${entityName}`,
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error(error.message);
     } else {

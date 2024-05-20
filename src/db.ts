@@ -1,5 +1,5 @@
-const dotenv = require('dotenv');
-const knex = require("knex");
+import dotenv from "dotenv";
+import knex from "knex";
 
 dotenv.config();
 

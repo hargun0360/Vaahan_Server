@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts", "src/controllers.js", "src/routes.ts", "src/index.ts"],
+  "include": ["src/**/*.ts", "src/controllers.ts", "src/routes.ts", "src/index.ts"],
   "exclude": ["node_modules"]
 }

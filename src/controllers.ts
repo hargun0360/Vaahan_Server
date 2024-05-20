@@ -1,8 +1,14 @@
-const { Request, Response } = require("express");
-const { db } = require("./db");
-const moment = require("moment");
+import { Request, Response } from "express";
+import { db } from "./db";
+import moment from "moment";
 
-const typeMapping = {
+interface Attribute {
+  name: string;
+  type: string;
+  isRequired: string;
+}
+
+const typeMapping: { [key: string]: string } = {
   text: "VARCHAR",
   bigint: "BIGINT",
   date: "DATE",
@@ -10,13 +16,13 @@ const typeMapping = {
   int: "INT",
 };
 
-const createEntity = async (req, res) => {
-  const { entityName, attributes } = req.body;
+export const createEntity = async (req: Request, res: Response): Promise<void> => {
+  const { entityName, attributes }: { entityName: string; attributes: Attribute[] } = req.body;
 
   try {
-    await db.schema.createTable(entityName, (table) => {
+    await db.schema.createTable(entityName, (table: any) => {
       table.string("id").primary();
-      attributes.forEach((attr) => {
+      attributes.forEach((attr: Attribute) => {
         const mappedType = typeMapping[attr.type];
         if (mappedType) {
           if (attr.isRequired === "YES") {
@@ -46,7 +52,7 @@ const createEntity = async (req, res) => {
   }
 };
 
-const createEntry = async (req, res) => {
+export const createEntry = async (req: Request, res: Response): Promise<void> => {
   const { entity } = req.params;
   const data = req.body;
 
@@ -54,7 +60,7 @@ const createEntry = async (req, res) => {
     const entitySchema = await db(entity).columnInfo();
 
     for (const [key, value] of Object.entries(entitySchema)) {
-      if (key !== "id" && value.nullable === false && (data[key] === null || data[key] === undefined || data[key] === "")) {
+      if (key !== "id" && (value as any).nullable === false && (data[key] === null || data[key] === undefined || data[key] === "")) {
         throw new Error(`Field "${key}" is required and cannot be null or empty`);
       }
     }
@@ -80,18 +86,18 @@ const createEntry = async (req, res) => {
   }
 };
 
-const getEntries = async (req, res) => {
+export const getEntries = async (req: Request, res: Response): Promise<void> => {
   const { entity } = req.params;
   try {
     const entries = await db(entity).select();
     const entitySchema = await db(entity).columnInfo();
     const attributes = Object.keys(entitySchema).map((key) => ({
       name: key,
-      type: entitySchema[key].type,
+      type: (entitySchema as any)[key].type,
     }));
 
     // Format date fields in entries
-    const formattedEntries = entries.map((entry) => {
+    const formattedEntries = entries.map((entry: any) => {
       const formattedEntry = { ...entry };
       for (const attr of attributes) {
         if (attr.type === 'date' && formattedEntry[attr.name]) {
@@ -113,7 +119,7 @@ const getEntries = async (req, res) => {
   }
 };
 
-const updateEntry = async (req, res) => {
+export const updateEntry = async (req: Request, res: Response): Promise<void> => {
   const { entity, id } = req.params;
   const data = req.body;
 
@@ -135,7 +141,7 @@ const updateEntry = async (req, res) => {
   }
 };
 
-const deleteEntry = async (req, res) => {
+export const deleteEntry = async (req: Request, res: Response): Promise<void> => {
   const { entity, id } = req.params;
 
   try {
@@ -156,7 +162,7 @@ const deleteEntry = async (req, res) => {
   }
 };
 
-const addAttribute = async (req, res) => {
+export const addAttribute = async (req: Request, res: Response): Promise<void> => {
   const { entityName, attribute } = req.body;
   const { name, type } = attribute;
 
@@ -173,7 +179,7 @@ const addAttribute = async (req, res) => {
       );
     }
 
-    await db.schema.table(entityName, (table) => {
+    await db.schema.table(entityName, (table: any) => {
       table.specificType(name, mappedType);
     });
 
@@ -193,11 +199,11 @@ const addAttribute = async (req, res) => {
   }
 };
 
-const deleteAttribute = async (req, res) => {
+export const deleteAttribute = async (req: Request, res: Response): Promise<void> => {
   const { entityName, attributeName } = req.body;
 
   try {
-    await db.schema.table(entityName, (table) => {
+    await db.schema.table(entityName, (table: any) => {
       table.dropColumn(attributeName);
     });
 
@@ -217,13 +223,13 @@ const deleteAttribute = async (req, res) => {
   }
 };
 
-const updateAttribute = async (req, res) => {
+export const updateAttribute = async (req: Request, res: Response): Promise<void> => {
   const { entityName, oldAttribute, newAttribute } = req.body;
 
   try {
-    await db.transaction(async (trx) => {
+    await db.transaction(async (trx: any) => {
       if (oldAttribute.name !== newAttribute.name) {
-        await trx.schema.table(entityName, (table) => {
+        await trx.schema.table(entityName, (table: any) => {
           table.renameColumn(oldAttribute.name, newAttribute.name);
         });
       }
@@ -233,7 +239,7 @@ const updateAttribute = async (req, res) => {
         if (!mappedType) {
           throw new Error(`Invalid type: ${newAttribute.type}`);
         }
-        await trx.schema.table(entityName, (table) => {
+        await trx.schema.table(entityName, (table: any) => {
           table.specificType(newAttribute.name, mappedType).alter();
         });
       }
@@ -253,15 +259,4 @@ const updateAttribute = async (req, res) => {
       res.status(500).send("Unknown error");
     }
   }
-};
-
-module.exports = {
-  createEntity,
-  createEntry,
-  getEntries,
-  updateEntry,
-  deleteEntry,
-  addAttribute,
-  deleteAttribute,
-  updateAttribute,
 };

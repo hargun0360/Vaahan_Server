@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { db } from "./db.js";
-import moment from "moment";
+const { Request, Response } = require("express");
+const { db } = require("./db.js");
+const moment = require("moment");
 
 const typeMapping: { [key: string]: string } = {
   text: "VARCHAR",
@@ -10,7 +10,7 @@ const typeMapping: { [key: string]: string } = {
   int: "INT",
 };
 
-export const createEntity = async (req: Request, res: Response): Promise<void> => {
+export const createEntity = async (req: typeof  Request, res: typeof  Response): Promise<void> => {
   const { entityName, attributes } = req.body;
 
   try {
@@ -44,7 +44,7 @@ export const createEntity = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-export const createEntry = async (req: Request, res: Response): Promise<void> => {
+export const createEntry = async (req: typeof  Request, res: typeof Response): Promise<void> => {
   const { entity } = req.params;
   const data = req.body;
 
@@ -76,7 +76,7 @@ export const createEntry = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-export const getEntries = async (req: Request, res: Response): Promise<void> => {
+export const getEntries = async (req: typeof Request, res: typeof Response): Promise<void> => {
   const { entity } = req.params;
   try {
     const entries = await db(entity).select();
@@ -87,7 +87,7 @@ export const getEntries = async (req: Request, res: Response): Promise<void> => 
     }));
 
     // Format date fields in entries
-    const formattedEntries = entries.map(entry => {
+    const formattedEntries = entries.map(entry  => {
       const formattedEntry = { ...entry };
       for (const attr of attributes) {
         if (attr.type === 'date' && formattedEntry[attr.name]) {
@@ -107,7 +107,7 @@ export const getEntries = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-export const updateEntry = async (req: Request, res: Response): Promise<void> => {
+export const updateEntry = async (req: typeof Request, res: typeof Response): Promise<void> => {
   const { entity, id } = req.params;
   const data = req.body;
 
@@ -127,7 +127,7 @@ export const updateEntry = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-export const deleteEntry = async (req: Request, res: Response): Promise<void> => {
+export const deleteEntry = async (req: typeof Request, res: typeof Response): Promise<void> => {
   const { entity, id } = req.params;
 
   try {
@@ -146,7 +146,7 @@ export const deleteEntry = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-export const addAttribute = async (req: Request, res: Response): Promise<void> => {
+export const addAttribute = async (req: typeof Request, res: typeof Response): Promise<void> => {
   const { entityName, attribute } = req.body;
   const { name, type } = attribute;
 
@@ -181,7 +181,7 @@ export const addAttribute = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-export const deleteAttribute = async (req: Request, res: Response): Promise<void> => {
+export const deleteAttribute = async (req: typeof Request, res: typeof Response): Promise<void> => {
   const { entityName, attributeName } = req.body;
 
   try {
@@ -203,7 +203,7 @@ export const deleteAttribute = async (req: Request, res: Response): Promise<void
   }
 };
 
-export const updateAttribute = async (req: Request, res: Response): Promise<void> => {
+export const updateAttribute = async (req: typeof Request, res: typeof Response): Promise<void> => {
   const { entityName, oldAttribute, newAttribute } = req.body;
 
   try {

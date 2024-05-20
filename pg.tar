@@ -1,0 +1,224 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.2
+-- Dumped by pg_dump version 16.2
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: Entity; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Entity" (
+    id character varying(255) NOT NULL,
+    name character varying,
+    class integer,
+    gender character varying
+);
+
+
+ALTER TABLE public."Entity" OWNER TO postgres;
+
+--
+-- Name: Hargun; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Hargun" (
+    id character varying(255) NOT NULL,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
+    nick_name character varying NOT NULL,
+    ssss character varying,
+    sssssss character varying,
+    ss character varying
+);
+
+
+ALTER TABLE public."Hargun" OWNER TO postgres;
+
+--
+-- Name: Stu; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Stu" (
+    id character varying(255) NOT NULL,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
+    gender character varying,
+    kk character varying
+);
+
+
+ALTER TABLE public."Stu" OWNER TO postgres;
+
+--
+-- Name: Student; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Student" (
+    id character varying(255) NOT NULL,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
+    roll_number bigint NOT NULL,
+    marks integer NOT NULL,
+    admission_date date NOT NULL,
+    "Gender" character varying,
+    ha character varying,
+    ja character varying,
+    ks character varying,
+    bb character varying,
+    jvvk character varying,
+    jdjdjd character varying
+);
+
+
+ALTER TABLE public."Student" OWNER TO postgres;
+
+--
+-- Name: kns; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.kns (
+    id character varying(255) NOT NULL,
+    q character varying NOT NULL,
+    "1q" character varying,
+    bool character varying,
+    ji bigint
+);
+
+
+ALTER TABLE public.kns OWNER TO postgres;
+
+--
+-- Name: sss; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.sss (
+    id character varying(255) NOT NULL,
+    sss character varying NOT NULL,
+    sssssss character varying NOT NULL,
+    sssssssssssss character varying
+);
+
+
+ALTER TABLE public.sss OWNER TO postgres;
+
+--
+-- Data for Name: Entity; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Entity" (id, name, class, gender) FROM stdin;
+1716103726584	uff	\N	\N
+1716103740155	ixi	\N	\N
+\.
+
+
+--
+-- Data for Name: Hargun; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Hargun" (id, first_name, last_name, nick_name, ssss, sssssss, ss) FROM stdin;
+\.
+
+
+--
+-- Data for Name: Stu; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Stu" (id, first_name, last_name, gender, kk) FROM stdin;
+1716104614433	ll	ll	ppp	\N
+\.
+
+
+--
+-- Data for Name: Student; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Student" (id, first_name, last_name, roll_number, marks, admission_date, "Gender", ha, ja, ks, bb, jvvk, jdjdjd) FROM stdin;
+\.
+
+
+--
+-- Data for Name: kns; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.kns (id, q, "1q", bool, ji) FROM stdin;
+1716104354244	1=2	1=1	\N	\N
+\.
+
+
+--
+-- Data for Name: sss; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.sss (id, sss, sssssss, sssssssssssss) FROM stdin;
+\.
+
+
+--
+-- Name: Entity Entity_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Entity"
+    ADD CONSTRAINT "Entity_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Hargun Hargun_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Hargun"
+    ADD CONSTRAINT "Hargun_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Stu Stu_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Stu"
+    ADD CONSTRAINT "Stu_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Student Student_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Student"
+    ADD CONSTRAINT "Student_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: kns kns_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.kns
+    ADD CONSTRAINT kns_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sss sss_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sss
+    ADD CONSTRAINT sss_pkey PRIMARY KEY (id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
